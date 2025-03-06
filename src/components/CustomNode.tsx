@@ -1,16 +1,33 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Handle, Position, ViewportPortal } from '@xyflow/react';
 import Image from 'next/image';
+import { selectionIcons, selectionType } from '@/utils/constants';
+import RefFlagIcon from '../../public/wotnot/flag.svg';
+import DeleteIcon from '../../public/wotnot/delete-icon.svg';
+import CopyIcon from '../../public/wotnot/copy.svg';
+import SideDrawerProvider from '@/context/wotnotSideDrawer';
 
 function CustomNode(props: any) {
-  console.log(props);
-  const { data, selected } = props;
+  // console.log(props);
+  const { data, selected, id } = props;
+  const [addNewNode, setAddNewNode] = React.useState<string>('');
+  const [copyNode, setCopyNode] = React.useState<string>('');
+
+  const { drawerHandler } = SideDrawerProvider();
+
+  useEffect(() => {
+    if (!copyNode) return;
+    setTimeout(() => {
+      setCopyNode('');
+    }, 2000);
+  }, [copyNode]);
 
   return (
     <div
-      className={`px-4 border ${
+      onMouseEnter={() => setCopyNode(id)}
+      className={`px-2 border-y border-r ${
         selected ? 'border-blue-600' : ''
-      } !pl-8 py-2 shadow-md rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l before:bg-red-500 before:top-0 before:-left-1 before:-z-10`}
+      } py-2 shadow-md rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l before:bg-red-500 before:top-0 before:-left-1 before:-z-10`}
     >
       {data?.start && (
         <div
@@ -22,17 +39,18 @@ function CustomNode(props: any) {
           <Image src={data?.start} alt='start here' />
         </div>
       )}
-
-      <div className='flex'>
-        <div className='rounded-full w-12 h-12 flex justify-center items-center bg-gray-100'>
-          {data.emoji}
+      <label htmlFor='my-drawer-4' className='drawer-button'>
+        <div className='flex min-h-10 gap-3 justify-start items-center'>
+          <Image
+            src={data?.start ? RefFlagIcon : selectionIcons['Page']}
+            alt='start here'
+            height={22}
+          />
+          <header className='text-black text-xs font-normal whitespace-nowrap truncate'>
+            Bot is triggered if…
+          </header>
         </div>
-        <div className='ml-2'>
-          <div className='text-lg font-bold'>{data.name}</div>
-          <div className='text-gray-500'>{data.job}</div>
-        </div>
-      </div>
-
+      </label>
       {!data?.start && (
         <Handle
           type='target'
@@ -41,12 +59,59 @@ function CustomNode(props: any) {
         ></Handle>
       )}
       <Handle
+        // isConnectable={false} //to prevent connection
+        onClick={() => setAddNewNode((prev) => (prev ? '' : props?.id))}
         type='source'
         position={Position.Bottom}
-        className='w-6 h-6 rounded-full flex justify-center items-center border-none !bg-blue-500'
+        className='w-6 h-6 rounded-full cursor-pointer flex justify-center items-center border-none !bg-blue-500'
       >
-        <div className='text-white'>+</div>
+        <div
+          className={`text-white transition-all`}
+          style={{
+            rotate: props?.id === addNewNode ? '225deg' : '',
+          }}
+        >
+          +
+        </div>
       </Handle>
+
+      {props?.id === addNewNode && (
+        <div
+          style={{
+            position: 'absolute',
+          }}
+          className='top-full border border-gray-400 divide-y flex flex-col mt-4 bg-white w-full left-0 p-3 rounded-lg'
+        >
+          {selectionType?.map((type) => (
+            //   <label  htmlFor='my-drawer-4'
+            //   className='flex gap-2 items-center py-2 drawer-button'
+            // >
+            <div
+              className='flex gap-2 items-center py-2'
+              // onClick={drawerHandler}
+            >
+              <div
+                className='p-1 rounded-full'
+                style={{ backgroundColor: type.bgColor }}
+              >
+                <Image src={type.icon} alt='icon' height={22} />
+              </div>
+              <header className='text-sm text-gray-500'>{type.type}</header>
+            </div>
+          ))}
+        </div>
+      )}
+      {copyNode === props?.id && (
+        <div
+          style={{
+            position: 'absolute',
+          }}
+          className='top-0 flex flex-col gap-2  ml-1 bg-white h-full w-8 items-center p-2 left-full rounded justify-between'
+        >
+          <Image src={CopyIcon} alt='' height={12} width={12} />
+          <Image src={DeleteIcon} alt='' height={12} />
+        </div>
+      )}
     </div>
   );
 }
