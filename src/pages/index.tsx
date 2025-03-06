@@ -17,22 +17,22 @@ import Button from '@/components/button';
 import CustomEdge from '@/components/customEdge';
 import WotNotContextData from '@/context/wotnotData';
 
-const initEdges = [
-  {
-    // type: 'straight',
-    id: 'e1-2',
-    source: '1',
-    target: '2',
-    label: 'edge label',
-    type: 'custom',
-  },
-  {
-    id: 'e1-3',
-    source: '1',
-    target: '3',
-    label: 'default',
-  },
-];
+// const initEdges = [
+//   {
+//     // type: 'straight',
+//     id: 'e1-2',
+//     source: '1',
+//     target: '2',
+//     label: 'edge label',
+//     type: 'custom',
+//   },
+//   {
+//     id: 'e1-3',
+//     source: '1',
+//     target: '3',
+//     label: 'default',
+//   },
+// ];
 const nodeTypes = {
   custom: CustomNode,
 };
@@ -41,15 +41,23 @@ const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
 };
 const Index = () => {
-  const { initNodes } = WotNotContextData();
-  // console.log('test', initNodes);
+  const { initNodes, initEdge } = WotNotContextData();
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initEdge);
+  // console.log(nodes);
+
   useEffect(() => {
     if (!initNodes) return;
+    
     setNodes(initNodes);
   }, [initNodes]);
+
+  useEffect(() => {
+    if (!initEdge) return;
+    setEdges(initEdge);
+  }, [initEdge]);
+
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]

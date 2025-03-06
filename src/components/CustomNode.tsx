@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from 'react';
 import { Handle, Position, ViewportPortal } from '@xyflow/react';
 import Image from 'next/image';
-import { selectionIcons, selectionType } from '@/utils/constants';
+import { getEdge, selectionIcons, selectionType } from '@/utils/constants';
 import RefFlagIcon from '../../public/wotnot/flag.svg';
 import DeleteIcon from '../../public/wotnot/delete-icon.svg';
 import CopyIcon from '../../public/wotnot/copy.svg';
@@ -9,12 +9,19 @@ import SideDrawerProvider from '@/context/wotnotSideDrawer';
 import WotNotContextData from '@/context/wotnotData';
 
 function CustomNode(props: any) {
-  const { initNodes, setInitNodes, currentNode, setCurrentNode } =
-    WotNotContextData();
+  const {
+    initNodes,
+    setInitEdge,
+    initEdge,
+    setInitNodes,
+    currentNode,
+    setCurrentNode,
+  } = WotNotContextData();
   const { data, selected, id } = props;
   const [addNewNode, setAddNewNode] = React.useState<string>('');
   const [copyNode, setCopyNode] = React.useState<string>('');
-  console.log('initNodes', props?.positionAbsoluteX, props?.positionAbsoluteY);
+// console.log(data);
+
   const { drawerHandler } = SideDrawerProvider();
 
   useEffect(() => {
@@ -101,21 +108,44 @@ function CustomNode(props: any) {
             <div
               key={ind}
               className='flex gap-2 items-center py-2'
-              onClick={() =>
-                setInitNodes((prev) => [
-                  ...prev,
+              onClick={() => {
+                setAddNewNode('');
+                const edge = getEdge(
+                  'test',
+                  `${props?.id}`,
+                  `${currentNode + 1}`,
+                  'label'
+                );
+                setInitEdge((prev) => [...prev, edge]);
+                const currNode = initNodes?.find((n) => n.id === addNewNode);
+                const nodeIndex = initNodes?.findIndex(
+                  (n) => n.id === addNewNode
+                );
+                
+                
+                const connectedNode = {
+                  ...currNode,
+                  data:{...data, targetIds: [`${currentNode + 1}`],}
+                 
+                };
+                console.log(connectedNode);
+                const prevInitEdge = JSON.parse(JSON.stringify(initEdge));
+                prevInitEdge[nodeIndex] = connectedNode;
+
+                setInitNodes([
+                  ...prevInitEdge,
                   {
                     id: `${currentNode + 1}`,
                     type: 'custom',
-                    data: { type: 'Page', targetIds: [`${currentNode}`] },
-
+                    data: { type: type?.type },
                     position: {
                       x: props?.positionAbsoluteX,
                       y: props?.positionAbsoluteY + 100,
                     },
                   },
-                ])
-              }
+                ]);
+                setCurrentNode((prev) => prev + 1);
+              }}
             >
               <div
                 className='p-1 rounded-full'

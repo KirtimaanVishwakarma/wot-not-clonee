@@ -4,12 +4,14 @@ import {
 } from '@/utils/interface';
 import React, { createContext, useContext, useState } from 'react';
 import StartHere from '../../public/start-here.svg';
+import { EdgeTypes } from '@xyflow/react';
 
 const WotNotData = createContext<{
   initNodes: InitialNodeInterface;
   setInitNodes: React.Dispatch<React.SetStateAction<InitialNodeInterface>>;
   currentNode: Number;
   setCurrentNode: React.Dispatch<React.SetStateAction<Number>>;
+  initEdge: EdgeTypes;
 }>({
   initNodes: [
     {
@@ -17,14 +19,15 @@ const WotNotData = createContext<{
       type: 'custom',
       data: {
         start: StartHere,
-        targetIds: ['2', '3'],
       },
       position: { x: 0, y: 50 },
     },
   ],
   setInitNodes: () => {},
+  initEdge: [],
   currentNode: 0,
   setCurrentNode: () => {},
+  setInitEdges: () => {},
 });
 export const WotNotDataProvider = ({
   children,
@@ -35,37 +38,22 @@ export const WotNotDataProvider = ({
       type: 'custom',
       data: {
         start: StartHere,
-        targetIds: ['2', '3'],
       },
       position: { x: 0, y: 50 },
     },
-    {
-      id: '2',
-      type: 'custom',
-      data: { type: 'Page' },
-      position: { x: -100, y: 200 },
-    },
-    {
-      id: '3',
-      type: 'custom',
-      data: {
-        type: 'Condition',
-      },
-      position: { x: 100, y: 200 },
-    },
-    {
-      id: '4',
-      type: 'custom',
-      data: {
-        type: 'Condition',
-      },
-      position: { x: 300, y: 200 },
-    },
   ]);
-  const [currentNode, setCurrentNode] = useState<Number>(4);
+  const [initEdge, setInitEdge] = useState([]);
+  const [currentNode, setCurrentNode] = useState<Number>(1);
   return (
     <WotNotData.Provider
-      value={{ initNodes, setInitNodes, currentNode, setCurrentNode }}
+      value={{
+        initNodes,
+        setInitNodes,
+        currentNode,
+        setCurrentNode,
+        initEdge,
+        setInitEdge,
+      }}
     >
       {children}
     </WotNotData.Provider>
