@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -15,27 +15,7 @@ import StartHere from '../../public/start-here.svg';
 import CustomNode from '@/components/CustomNode';
 import Button from '@/components/button';
 import CustomEdge from '@/components/customEdge';
-
-const initNodes = [
-  {
-    id: '1',
-    type: 'custom',
-    data: { name: 'Jane Doe', job: 'CEO', emoji: '😎', start: StartHere },
-    position: { x: 0, y: 50 },
-  },
-  {
-    id: '2',
-    type: 'custom',
-    data: { name: 'Tyler Weary', job: 'Designer', emoji: '🤓' },
-    position: { x: -200, y: 200 },
-  },
-  {
-    id: '3',
-    type: 'custom',
-    data: { name: 'Kristi Price', job: 'Developer', emoji: '🤩' },
-    position: { x: 200, y: 200 },
-  },
-];
+import WotNotContextData from '@/context/wotnotData';
 
 const initEdges = [
   {
@@ -61,9 +41,15 @@ const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
 };
 const Index = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
+  const { initNodes } = WotNotContextData();
+  console.log('test', initNodes);
 
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
+  useEffect(() => {
+    if (!initNodes) return;
+    setNodes(initNodes);
+  }, [initNodes]);
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]

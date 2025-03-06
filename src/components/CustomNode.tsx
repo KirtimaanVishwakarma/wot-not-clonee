@@ -8,11 +8,10 @@ import CopyIcon from '../../public/wotnot/copy.svg';
 import SideDrawerProvider from '@/context/wotnotSideDrawer';
 
 function CustomNode(props: any) {
-  // console.log(props);
   const { data, selected, id } = props;
   const [addNewNode, setAddNewNode] = React.useState<string>('');
   const [copyNode, setCopyNode] = React.useState<string>('');
-
+  // console.log(props);
   const { drawerHandler } = SideDrawerProvider();
 
   useEffect(() => {
@@ -27,7 +26,9 @@ function CustomNode(props: any) {
       onMouseEnter={() => setCopyNode(id)}
       className={`px-2 border-y border-r ${
         selected ? 'border-blue-600' : ''
-      } py-2 shadow-md rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l before:bg-red-500 before:top-0 before:-left-1 before:-z-10`}
+      } py-2 shadow-md rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l before:${
+        selectionIcons[data?.type]?.bgColor || 'bg-red-500'
+      }  before:top-0 before:-left-1 before:-z-10`}
     >
       {data?.start && (
         <div
@@ -42,7 +43,7 @@ function CustomNode(props: any) {
       <label htmlFor='my-drawer-4' className='drawer-button'>
         <div className='flex min-h-10 gap-3 justify-start items-center'>
           <Image
-            src={data?.start ? RefFlagIcon : selectionIcons['Page']}
+            src={data?.start ? RefFlagIcon : selectionIcons[data?.type]?.icon}
             alt='start here'
             height={22}
           />
@@ -58,22 +59,30 @@ function CustomNode(props: any) {
           className='h-3 w-3 rounded-full !bg-teal-500'
         ></Handle>
       )}
-      <Handle
-        // isConnectable={false} //to prevent connection
-        onClick={() => setAddNewNode((prev) => (prev ? '' : props?.id))}
-        type='source'
-        position={Position.Bottom}
-        className='w-6 h-6 rounded-full cursor-pointer flex justify-center items-center border-none !bg-blue-500'
-      >
-        <div
-          className={`text-white transition-all`}
-          style={{
-            rotate: props?.id === addNewNode ? '225deg' : '',
-          }}
+      {data?.targetIds ? (
+        <Handle
+          type='source'
+          position={Position.Bottom}
+          className='h-3 w-3 rounded-full !bg-teal-500'
+        ></Handle>
+      ) : (
+        <Handle
+          // isConnectable={false} //to prevent connection
+          onClick={() => setAddNewNode((prev) => (prev ? '' : props?.id))}
+          type='source'
+          position={Position.Bottom}
+          className='w-6 h-6 rounded-full cursor-pointer flex justify-center items-center border-none !bg-blue-500'
         >
-          +
-        </div>
-      </Handle>
+          <div
+            className={`text-white transition-all`}
+            style={{
+              rotate: props?.id === addNewNode ? '225deg' : '',
+            }}
+          >
+            +
+          </div>
+        </Handle>
+      )}
 
       {props?.id === addNewNode && (
         <div
@@ -82,11 +91,12 @@ function CustomNode(props: any) {
           }}
           className='top-full border border-gray-400 divide-y flex flex-col mt-4 bg-white w-full left-0 p-3 rounded-lg'
         >
-          {selectionType?.map((type) => (
+          {selectionType?.map((type, ind) => (
             //   <label  htmlFor='my-drawer-4'
             //   className='flex gap-2 items-center py-2 drawer-button'
             // >
             <div
+              key={ind}
               className='flex gap-2 items-center py-2'
               // onClick={drawerHandler}
             >
