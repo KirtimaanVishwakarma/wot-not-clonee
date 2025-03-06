@@ -8,6 +8,8 @@ import StartHere from '../../public/start-here.svg';
 const WotNotData = createContext<{
   initNodes: InitialNodeInterface;
   setInitNodes: React.Dispatch<React.SetStateAction<InitialNodeInterface>>;
+  currentNode: Number;
+  setCurrentNode: React.Dispatch<React.SetStateAction<Number>>;
 }>({
   initNodes: [
     {
@@ -21,6 +23,8 @@ const WotNotData = createContext<{
     },
   ],
   setInitNodes: () => {},
+  currentNode: 0,
+  setCurrentNode: () => {},
 });
 export const WotNotDataProvider = ({
   children,
@@ -58,8 +62,11 @@ export const WotNotDataProvider = ({
       position: { x: 300, y: 200 },
     },
   ]);
+  const [currentNode, setCurrentNode] = useState<Number>(4);
   return (
-    <WotNotData.Provider value={{ initNodes, setInitNodes }}>
+    <WotNotData.Provider
+      value={{ initNodes, setInitNodes, currentNode, setCurrentNode }}
+    >
       {children}
     </WotNotData.Provider>
   );

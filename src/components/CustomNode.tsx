@@ -6,12 +6,15 @@ import RefFlagIcon from '../../public/wotnot/flag.svg';
 import DeleteIcon from '../../public/wotnot/delete-icon.svg';
 import CopyIcon from '../../public/wotnot/copy.svg';
 import SideDrawerProvider from '@/context/wotnotSideDrawer';
+import WotNotContextData from '@/context/wotnotData';
 
 function CustomNode(props: any) {
+  const { initNodes, setInitNodes, currentNode, setCurrentNode } =
+    WotNotContextData();
   const { data, selected, id } = props;
   const [addNewNode, setAddNewNode] = React.useState<string>('');
   const [copyNode, setCopyNode] = React.useState<string>('');
-  // console.log(props);
+  console.log('initNodes', props?.positionAbsoluteX, props?.positionAbsoluteY);
   const { drawerHandler } = SideDrawerProvider();
 
   useEffect(() => {
@@ -98,7 +101,21 @@ function CustomNode(props: any) {
             <div
               key={ind}
               className='flex gap-2 items-center py-2'
-              // onClick={drawerHandler}
+              onClick={() =>
+                setInitNodes((prev) => [
+                  ...prev,
+                  {
+                    id: `${currentNode + 1}`,
+                    type: 'custom',
+                    data: { type: 'Page', targetIds: [`${currentNode}`] },
+
+                    position: {
+                      x: props?.positionAbsoluteX,
+                      y: props?.positionAbsoluteY + 100,
+                    },
+                  },
+                ])
+              }
             >
               <div
                 className='p-1 rounded-full'

@@ -42,7 +42,7 @@ const edgeTypes: EdgeTypes = {
 };
 const Index = () => {
   const { initNodes } = WotNotContextData();
-  console.log('test', initNodes);
+  // console.log('test', initNodes);
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
