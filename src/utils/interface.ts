@@ -1,6 +1,6 @@
 import React from 'react'
 
-export type SelectionType = 'Page' | 'Condition'
+export type SelectionType = 'Page' | 'Condition' | 'Conditions'
 export type SelectionTypeInterface = { type: SelectionType, icon: any, bgColor: `#${string}` }[]
 export interface WotNotDataProviderInterface {
     children: React.ReactNode
@@ -18,8 +18,8 @@ export type InitialNodeInterface = {
 }[]
 
 export type EdgeTypes = {
-        id: string,
-        source: string,
-        target: string,
-        label: string,
-    }
+    id: string,
+    source: string,
+    target: string,
+    label: string,
+}

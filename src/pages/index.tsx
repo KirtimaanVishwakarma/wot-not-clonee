@@ -16,6 +16,8 @@ import CustomNode from '@/components/CustomNode';
 import Button from '@/components/button';
 import CustomEdge from '@/components/customEdge';
 import WotNotContextData from '@/context/wotnotData';
+import conditionNode from '@/components/conditionNode';
+import SideDrawer from '@/components/sideDrawer';
 
 // const initEdges = [
 //   {
@@ -34,7 +36,9 @@ import WotNotContextData from '@/context/wotnotData';
 //   },
 // ];
 const nodeTypes = {
-  custom: CustomNode,
+  Page: CustomNode,
+  Condition: CustomNode,
+  Conditions: conditionNode,
 };
 
 const edgeTypes: EdgeTypes = {
@@ -49,7 +53,7 @@ const Index = () => {
 
   useEffect(() => {
     if (!initNodes) return;
-    
+
     setNodes(initNodes);
   }, [initNodes]);
 
@@ -102,25 +106,7 @@ const Index = () => {
           <Background color='blue' variant={BackgroundVariant.Dots} gap={12} />
         </ReactFlow>
       </div>
-      <div className='drawer drawer-end'>
-        <input id='my-drawer-4' type='checkbox' className='drawer-toggle' />
-        <div className='drawer-side  '>
-          <label
-            htmlFor='my-drawer-4'
-            aria-label='close sidebar'
-            className='drawer-overlay'
-          ></label>
-          <ul className='menu bg-base-200 text-base-content min-h-full w-1/4 p-4 !bg-white'>
-            {/* Sidebar content here */}
-            <li>
-              <a>Sidebar Item 1</a>
-            </li>
-            <li>
-              <a>Sidebar Item 2</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <SideDrawer />
     </div>
   );
 };

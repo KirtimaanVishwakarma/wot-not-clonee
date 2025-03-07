@@ -16,11 +16,11 @@ function CustomNode(props: any) {
     setInitNodes,
     currentNode,
     setCurrentNode,
+    setSelectedNodeData,
   } = WotNotContextData();
   const { data, selected, id } = props;
   const [addNewNode, setAddNewNode] = React.useState<string>('');
   const [copyNode, setCopyNode] = React.useState<string>('');
-// console.log(data);
 
   const { drawerHandler } = SideDrawerProvider();
 
@@ -36,8 +36,8 @@ function CustomNode(props: any) {
       onMouseEnter={() => setCopyNode(id)}
       className={`px-2 border-y border-r ${
         selected ? 'border-blue-600' : ''
-      } py-2 shadow-md rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l before:${
-        selectionIcons[data?.type]?.bgColor || 'bg-red-500'
+      } py-2 shadow-md rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l ${
+        selectionIcons[data?.type]?.bgColor || 'before:bg-red-500'
       }  before:top-0 before:-left-1 before:-z-10`}
     >
       {data?.start && (
@@ -50,7 +50,11 @@ function CustomNode(props: any) {
           <Image src={data?.start} alt='start here' />
         </div>
       )}
-      <label htmlFor='my-drawer-4' className='drawer-button'>
+      <label
+        htmlFor='my-drawer-4'
+        className='drawer-button'
+        onClick={() => setSelectedNodeData(props)}
+      >
         <div className='flex min-h-10 gap-3 justify-start items-center'>
           <Image
             src={data?.start ? RefFlagIcon : selectionIcons[data?.type]?.icon}
@@ -66,14 +70,14 @@ function CustomNode(props: any) {
         <Handle
           type='target'
           position={Position.Top}
-          className='h-3 w-3 rounded-full !bg-teal-500'
+          className='h-3 w-3 rounded-full !bg-blue-500'
         ></Handle>
       )}
       {data?.targetIds ? (
         <Handle
           type='source'
           position={Position.Bottom}
-          className='h-3 w-3 rounded-full !bg-teal-500'
+          className='h-3 w-3 rounded-full !bg-blue-500'
         ></Handle>
       ) : (
         <Handle
@@ -102,49 +106,99 @@ function CustomNode(props: any) {
           className='top-full border border-gray-400 divide-y flex flex-col mt-4 bg-white w-full left-0 p-3 rounded-lg'
         >
           {selectionType?.map((type, ind) => (
-            //   <label  htmlFor='my-drawer-4'
-            //   className='flex gap-2 items-center py-2 drawer-button'
-            // >
             <div
               key={ind}
               className='flex gap-2 items-center py-2'
               onClick={() => {
                 setAddNewNode('');
                 const edge = getEdge(
-                  'test',
+                  `test${currentNode}`,
                   `${props?.id}`,
-                  `${currentNode + 1}`,
-                  'label'
+                  `${currentNode + 1}`
+                  // 'label'
                 );
+
                 setInitEdge((prev) => [...prev, edge]);
+
                 const currNode = initNodes?.find((n) => n.id === addNewNode);
+
                 const nodeIndex = initNodes?.findIndex(
                   (n) => n.id === addNewNode
                 );
-                
-                
+
                 const connectedNode = {
                   ...currNode,
-                  data:{...data, targetIds: [`${currentNode + 1}`],}
-                 
+                  data: { ...data, targetIds: [`${currentNode + 1}`] },
                 };
-                console.log(connectedNode);
-                const prevInitEdge = JSON.parse(JSON.stringify(initEdge));
+                const prevInitEdge = JSON.parse(JSON.stringify(initNodes));
                 prevInitEdge[nodeIndex] = connectedNode;
+                console.log('type?.type', type?.type);
 
-                setInitNodes([
-                  ...prevInitEdge,
-                  {
-                    id: `${currentNode + 1}`,
-                    type: 'custom',
-                    data: { type: type?.type },
-                    position: {
-                      x: props?.positionAbsoluteX,
-                      y: props?.positionAbsoluteY + 100,
+                if (type?.type === 'Condition') {
+                  setInitNodes([
+                    ...prevInitEdge,
+                    {
+                      id: `${currentNode + 1}`,
+                      type: type?.type,
+                      data: { type: type?.type },
+                      position: {
+                        x: props?.positionAbsoluteX,
+                        y: props?.positionAbsoluteY + 150,
+                      },
                     },
-                  },
-                ]);
-                setCurrentNode((prev) => prev + 1);
+                    {
+                      id: `${currentNode + 2}`,
+                      type: 'Conditions',
+                      data: { type: 'Conditions' },
+                      position: {
+                        x: props?.positionAbsoluteX - 300,
+                        y: props?.positionAbsoluteY + 300,
+                      },
+                    },
+                    {
+                      id: `${currentNode + 3}`,
+                      type: 'Conditions',
+                      data: { type: 'Conditions' },
+                      position: {
+                        x: props?.positionAbsoluteX - 100,
+                        y: props?.positionAbsoluteY + 300,
+                      },
+                    },
+                    {
+                      id: `${currentNode + 4}`,
+                      type: 'Conditions',
+                      data: { type: 'Conditions' },
+                      position: {
+                        x: props?.positionAbsoluteX + 100,
+                        y: props?.positionAbsoluteY + 300,
+                      },
+                    },
+                    {
+                      id: `${currentNode + 5}`,
+                      type: 'Conditions',
+                      data: { type: 'Conditions' },
+                      position: {
+                        x: props?.positionAbsoluteX + 300,
+                        y: props?.positionAbsoluteY + 300,
+                      },
+                    },
+                  ]);
+                } else {
+                  setInitNodes([
+                    ...prevInitEdge,
+                    {
+                      id: `${currentNode + 1}`,
+                      type: type?.type,
+                      data: { type: type?.type },
+                      position: {
+                        x: props?.positionAbsoluteX,
+                        y: props?.positionAbsoluteY + 150,
+                      },
+                    },
+                  ]);
+                }
+
+                setCurrentNode((prev) => prev + 6);
               }}
             >
               <div
@@ -158,7 +212,7 @@ function CustomNode(props: any) {
           ))}
         </div>
       )}
-      {copyNode === props?.id && (
+      {copyNode === props?.id && copyNode !== '1' && (
         <div
           style={{
             position: 'absolute',
