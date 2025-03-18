@@ -1,10 +1,10 @@
 import {
   InitialNodeInterface,
   WotNotDataProviderInterface,
-} from '@/utils/interface';
-import React, { createContext, useContext, useState } from 'react';
-import StartHere from '../../public/start-here.svg';
-import { EdgeTypes } from '@xyflow/react';
+} from "@/utils/interface";
+import React, { createContext, useContext, useState } from "react";
+import StartHere from "../../public/start-here.svg";
+import { EdgeTypes } from "@xyflow/react";
 
 const WotNotData = createContext<{
   initNodes: InitialNodeInterface;
@@ -17,8 +17,8 @@ const WotNotData = createContext<{
 }>({
   initNodes: [
     {
-      id: '1',
-      type: 'custom',
+      id: "1",
+      type: "custom",
       data: {
         start: StartHere,
       },
@@ -38,8 +38,10 @@ export const WotNotDataProvider = ({
 }: WotNotDataProviderInterface) => {
   const [initNodes, setInitNodes] = useState<InitialNodeInterface>([
     {
-      id: '1',
-      type: 'Page',
+      id: "1",
+      type: "Page",
+      deletable: false,
+      draggable: false,
       data: {
         start: StartHere,
       },
@@ -49,7 +51,9 @@ export const WotNotDataProvider = ({
   const [initEdge, setInitEdge] = useState([]);
   const [selectedNodeData, setSelectedNodeData] = useState<any>(null);
   const [currentNode, setCurrentNode] = useState<Number>(1);
-  
+  const [currentPageNode, setCurrentPageNode] = useState<Number>(1);
+  const [currentConditionNode, setCurrentConditionNode] = useState<Number>(1);
+
   return (
     <WotNotData.Provider
       value={{
@@ -61,6 +65,10 @@ export const WotNotDataProvider = ({
         setInitEdge,
         selectedNodeData,
         setSelectedNodeData,
+        currentPageNode,
+        setCurrentPageNode,
+        currentConditionNode,
+        setCurrentConditionNode,
       }}
     >
       {children}
