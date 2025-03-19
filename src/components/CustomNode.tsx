@@ -16,10 +16,9 @@ import WotNotContextData from "@/context/wotnotData";
 
 function CustomNode(props: any) {
   const {
-    initNodes,
-    setInitEdge,
-    initEdge,
-    setInitNodes,
+    nodes,
+    edges,
+    setEdges,
     setSelectedNodeData,
     currentPageNode,
     setCurrentPageNode,
@@ -160,21 +159,19 @@ function CustomNode(props: any) {
           {selectionType?.map((type, ind) => (
             <div
               key={ind}
-              className="flex gap-2 items-center py-2"
+              className="flex gap-2 items-center py-2 cursor-pointer"
               onClick={() => {
                 setAddNewNode("");
 
-                const currNode = initNodes?.find((n) => n.id === addNewNode);
+                const currNode = nodes?.find((n) => n.id === addNewNode);
 
-                const nodeIndex = initNodes?.findIndex(
-                  (n) => n.id === addNewNode
-                );
+                const nodeIndex = nodes?.findIndex((n) => n.id === addNewNode);
 
                 const connectedNode = {
                   ...currNode,
                   data,
                 };
-                const prevInitEdge = JSON.parse(JSON.stringify(initNodes));
+                const prevInitEdge = JSON.parse(JSON.stringify(nodes));
                 prevInitEdge[nodeIndex] = connectedNode;
 
                 if (type?.type === "Condition") {
@@ -189,7 +186,7 @@ function CustomNode(props: any) {
                     )
                   );
 
-                  setInitEdge((prev) => [
+                  setEdges((prev) => [
                     ...prev,
                     getEdge(
                       `cd${currentConditionNode}`,
@@ -209,7 +206,7 @@ function CustomNode(props: any) {
                       deletable: false,
                     };
                   });
-                  setInitNodes([
+                  setNodes([
                     ...prevInitEdge,
                     {
                       id: `cd${currentConditionNode}`,
@@ -232,9 +229,9 @@ function CustomNode(props: any) {
                     // 'label'
                   );
 
-                  setInitEdge((prev) => [...prev, edge]);
+                  setEdges((prev) => [...prev, edge]);
 
-                  setInitNodes([
+                  setNodes([
                     ...prevInitEdge,
                     {
                       id: `p${currentPageNode}`,

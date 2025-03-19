@@ -1,12 +1,25 @@
 import WotNotContextData from "@/context/wotnotData";
-import { selectionIcons } from "@/utils/constants";
+import { FormObject, selectionIcons } from "@/utils/constants";
 import Image from "next/image";
 import React from "react";
 import StartIcon from "../../public/wotnot/flag.svg";
+import Select from "./formWrapper/select";
+import FormWapper from "./formWrapper";
+import { useForm } from "react-hook-form";
+import Button from "./button";
 
 const SideDrawer = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const { selectedNodeData } = WotNotContextData();
-  console.log("selectedNodeData", selectedNodeData);
+  // console.log("selectedNodeData", selectedNodeData);
+
+  const submitForm = async (data) => {
+    console.log(data);
+  };
 
   return (
     <div className="drawer drawer-end">
@@ -32,7 +45,18 @@ const SideDrawer = () => {
               />
               <header className="font-normal text-base">Select Page</header>
             </div>
-            <div className="h-full max-h-full overflow-auto">data</div>
+            <div className="h-full max-h-full overflow-auto">
+              <form onSubmit={handleSubmit(submitForm)}>
+                <div className="grid grid-cols-2 w-full gap-4">
+                  <FormWapper
+                    formObject={FormObject}
+                    register={register}
+                    errors={errors}
+                  />
+                </div>
+                <Button btnName="Submit" btnType="primary" type="submit" />
+              </form>
+            </div>
           </div>
         </div>
         {/* </ul> */}

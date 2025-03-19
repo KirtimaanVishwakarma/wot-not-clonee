@@ -9,14 +9,8 @@ import SideDrawerProvider from "@/context/wotnotSideDrawer";
 import WotNotContextData from "@/context/wotnotData";
 
 function ConditionNode(props: any) {
-  const {
-    initNodes,
-    setInitEdge,
-    currentPageNode,
-    setInitNodes,
-    currentNode,
-    setCurrentPageNode,
-  } = WotNotContextData();
+  const { nodes, setEdges, currentPageNode, setNodes, setCurrentPageNode } =
+    WotNotContextData();
   const { data, selected, id } = props;
   const [addNewNode, setAddNewNode] = React.useState<string>("");
 
@@ -66,7 +60,7 @@ function ConditionNode(props: any) {
           {[selectionType[0]]?.map((type, ind) => (
             <div
               key={ind}
-              className="flex gap-2 items-center py-2"
+              className="flex gap-2 items-center py-2 cursor-pointer"
               onClick={() => {
                 setAddNewNode("");
                 const edge = getEdge(
@@ -76,29 +70,27 @@ function ConditionNode(props: any) {
                   // 'label'
                 );
 
-                setInitEdge((prev) => [...prev, edge]);
+                setEdges((prev) => [...prev, edge]);
 
-                const currNode = initNodes?.find((n) => n.id === addNewNode);
+                const currNode = nodes?.find((n) => n.id === addNewNode);
 
-                const nodeIndex = initNodes?.findIndex(
-                  (n) => n.id === addNewNode
-                );
+                const nodeIndex = nodes?.findIndex((n) => n.id === addNewNode);
 
                 const connectedNode = {
                   ...currNode,
                   data,
                 };
-                const prevInitEdge = JSON.parse(JSON.stringify(initNodes));
+                const prevInitEdge = JSON.parse(JSON.stringify(nodes));
                 prevInitEdge[nodeIndex] = connectedNode;
 
-                setInitNodes([
+                setNodes([
                   ...prevInitEdge,
                   {
                     id: `p${currentPageNode}`,
                     type: type?.type,
                     data: { type: type?.type },
                     position: {
-                      x: props?.positionAbsoluteX,
+                      x: props?.positionAbsoluteX - 4,
                       y: props?.positionAbsoluteY + 150,
                     },
                   },

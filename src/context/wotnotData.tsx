@@ -4,18 +4,16 @@ import {
 } from "@/utils/interface";
 import React, { createContext, useContext, useState } from "react";
 import StartHere from "../../public/start-here.svg";
-import { EdgeTypes } from "@xyflow/react";
+import { EdgeTypes, useEdgesState, useNodesState } from "@xyflow/react";
 
 const WotNotData = createContext<{
-  initNodes: InitialNodeInterface;
-  setInitNodes: React.Dispatch<React.SetStateAction<InitialNodeInterface>>;
+  nodes: InitialNodeInterface;
   currentNode: Number;
   setCurrentNode: React.Dispatch<React.SetStateAction<Number>>;
-  initEdge: EdgeTypes;
   selectedNodeData: any;
   setSelectedNodeData: React.Dispatch<React.SetStateAction<any>>;
 }>({
-  initNodes: [
+  nodes: [
     {
       id: "1",
       type: "custom",
@@ -25,18 +23,19 @@ const WotNotData = createContext<{
       position: { x: 0, y: 50 },
     },
   ],
-  setInitNodes: () => {},
-  initEdge: [],
   currentNode: 0,
   setCurrentNode: () => {},
-  setInitEdges: () => {},
   selectedNodeData: null,
   setSelectedNodeData: () => {},
 });
 export const WotNotDataProvider = ({
   children,
 }: WotNotDataProviderInterface) => {
-  const [initNodes, setInitNodes] = useState<InitialNodeInterface>([
+  const [selectedNodeData, setSelectedNodeData] = useState<any>(null);
+  const [currentNode, setCurrentNode] = useState<Number>(1);
+  const [currentPageNode, setCurrentPageNode] = useState<Number>(1);
+  const [currentConditionNode, setCurrentConditionNode] = useState<Number>(1);
+  const [nodes, setNodes, onNodesChange] = useNodesState([
     {
       id: "1",
       type: "Page",
@@ -48,27 +47,25 @@ export const WotNotDataProvider = ({
       position: { x: 0, y: 50 },
     },
   ]);
-  const [initEdge, setInitEdge] = useState([]);
-  const [selectedNodeData, setSelectedNodeData] = useState<any>(null);
-  const [currentNode, setCurrentNode] = useState<Number>(1);
-  const [currentPageNode, setCurrentPageNode] = useState<Number>(1);
-  const [currentConditionNode, setCurrentConditionNode] = useState<Number>(1);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   return (
     <WotNotData.Provider
       value={{
-        initNodes,
-        setInitNodes,
         currentNode,
         setCurrentNode,
-        initEdge,
-        setInitEdge,
         selectedNodeData,
         setSelectedNodeData,
         currentPageNode,
         setCurrentPageNode,
         currentConditionNode,
         setCurrentConditionNode,
+        nodes,
+        setNodes,
+        onNodesChange,
+        edges,
+        setEdges,
+        onEdgesChange,
       }}
     >
       {children}

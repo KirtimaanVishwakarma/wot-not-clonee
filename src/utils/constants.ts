@@ -38,11 +38,31 @@ export const getEdge = (
   };
 };
 
-// : EdgeType = {
-//     id: '',
-//     source: '',
-//     target: '',
-//     label: '',
-//     type: 'custom',
-//     deletable: false,
-// }
+export const FormObject = [
+  {
+    type: "text",
+    span: "col-span-1",
+    label: "select text",
+    form: {
+      required: "required",
+    },
+    id: "check",
+    placeholder: "select page...",
+  },
+  {
+    type: "select",
+    span: "col-span-1",
+    label: "select page",
+    form: {
+      required: "required",
+    },
+    id: "page",
+    placeholder: "select page...",
+    selectProps: [
+      { label: "test1", value: "test1" },
+      { label: "test2", value: "test2" },
+      { label: "test3", value: "test3" },
+      { label: "test4", value: "test4" },
+    ],
+  },
+];
