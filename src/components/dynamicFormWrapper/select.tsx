@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { FormFieldInterface } from "./index";
+import { FormFieldInterface } from "../formWrapper";
 
 const Select = ({
   span,
@@ -17,19 +17,23 @@ const Select = ({
   formDisabled,
   onChange,
 }: FormFieldInterface) => {
+  const [fieldName, index, fieldId] = useMemo(() => id.split("."), [id]);
+
+  const error = errors?.[fieldName]?.[index]?.[fieldId];
+
   return (
-    <div
-      className={`relative mb-2 bg-white self-start ${span || "col-span-1"}`}
-    >
-      <label
-        htmlFor={id}
-        className="block mb-2 text-base font-medium text-black whitespace-nowrap"
-      >
-        {label} {form?.required && <span className="text-rose-800">*</span>}
-      </label>
+    <div className={`relative mb-2 self-start ${span || "col-span-1"}`}>
+      {label && (
+        <label
+          htmlFor={id}
+          className="block mb-2 text-base font-medium text-black whitespace-nowrap"
+        >
+          {label} {form?.required && <span className="text-rose-800">*</span>}
+        </label>
+      )}
       <select
-        className={`mx-0 bg-white h-12 truncate rounded border border-solid p-2 pr-6 ${
-          errorFields ? "border-red-700" : "border-gray-400"
+        className={`mx-0 h-12 truncate rounded border border-solid p-2 pr-6 ${
+          error?.message || errorsMsg ? "border-red-100" : "border-gray-400"
         } bg-white-0 text-base font-normal text-black outline-none ${
           label && "w-full"
         }
@@ -58,16 +62,21 @@ const Select = ({
               value={ele.value}
               disabled={ele.value === "" || ele?.disabled}
               className="text-black"
-              data-object={JSON.stringify(ele?.details || null)}
             >
               {ele.label}
             </option>
           );
         })}
       </select>
-      {errors[id]?.message && (
-        <div className="mt-2 text-xs text-red-700">{errors[id]?.message}</div>
-      )}
+      <div className="mt-2 text-xs text-red-100">
+        {error?.message ||
+          (typeof errorsMsg === "string"
+            ? errorsMsg
+            : errorsMsg?.message
+            ? errorsMsg?.message
+            : "") ||
+          ""}
+      </div>
     </div>
   );
 };

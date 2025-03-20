@@ -1,9 +1,9 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
 const drawerHandler = (): void => {
-  const drawerInput: any = document.getElementById('my-drawer-4');
+  const drawerInput: any = document.getElementById("my-drawer-4");
   // console.log("drawerInput",drawerInput);
-  
+
   if (drawerInput) {
     drawerInput.checked = false;
   } else {
@@ -15,9 +15,7 @@ const Drawer = createContext({ drawerHandler: () => {} });
 
 export const SideDrawer = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Drawer.Provider value={{ drawerHandler }}>
-      {children}
-    </Drawer.Provider>
+    <Drawer.Provider value={{ drawerHandler }}>{children}</Drawer.Provider>
   );
 };
 

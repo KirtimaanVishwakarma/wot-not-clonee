@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useMemo } from "react";
 
 type BtnType = {
@@ -7,6 +8,7 @@ type BtnType = {
   btnName: string;
   onClick?: () => void;
   disabled?: boolean;
+  icon?: any;
 };
 const Button = ({
   className = "",
@@ -15,6 +17,7 @@ const Button = ({
   btnName,
   onClick,
   disabled = false,
+  icon,
 }: BtnType) => {
   const style = useMemo(() => {
     if (btnType === "primary") {
@@ -38,7 +41,13 @@ const Button = ({
       onClick={onClick}
       disabled={disabled}
     >
-      {btnName}
+      {icon ? (
+        <div className="flex justify-between gap-2">
+          <Image src={icon} alt="icon" height={20} /> <span> {btnName}</span>
+        </div>
+      ) : (
+        btnName
+      )}
     </button>
   );
 };

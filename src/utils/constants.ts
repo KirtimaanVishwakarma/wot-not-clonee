@@ -38,17 +38,7 @@ export const getEdge = (
   };
 };
 
-export const FormObject = [
-  {
-    type: "text",
-    span: "col-span-1",
-    label: "select text",
-    form: {
-      required: "required",
-    },
-    id: "check",
-    placeholder: "select page...",
-  },
+export const pageFormObject = [
   {
     type: "select",
     span: "col-span-1",
@@ -58,11 +48,32 @@ export const FormObject = [
     },
     id: "page",
     placeholder: "select page...",
-    selectProps: [
-      { label: "test1", value: "test1" },
-      { label: "test2", value: "test2" },
-      { label: "test3", value: "test3" },
-      { label: "test4", value: "test4" },
-    ],
+    selectProps: [],
+  },
+];
+
+export const conditionForm = [
+  {
+    type: "select",
+    span: "col-span-1",
+    label: "select Variable",
+    id: "variable",
+    placeholder: "Select Variable",
+    selectProps: [],
+  },
+  {
+    type: "select",
+    span: "col-span-1",
+    label: "Select Operater",
+    id: "operator",
+    placeholder: "Select operator...",
+    selectProps: [],
+  },
+  {
+    type: "text",
+    span: "col-span-1",
+    label: "select page",
+    id: "value",
+    placeholder: "Please enter value",
   },
 ];

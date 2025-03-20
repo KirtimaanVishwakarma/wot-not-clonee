@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ReactFlow,
   MiniMap,
@@ -16,23 +16,16 @@ import CustomEdge from "@/components/customEdge";
 import WotNotContextData from "@/context/wotnotData";
 import conditionNode from "@/components/conditionNode";
 import SideDrawer from "@/components/sideDrawer";
+import { useFetch } from "@/hooks/useFetch";
+import FetchApi from "@/utils/apiUtils";
+import { FIELD_CONDITION, PAGE_LIST } from "@/utils/ApiConstants";
+import { pageFormObject } from "@/utils/constants";
+import { register } from "module";
+import { useForm } from "react-hook-form";
+import FormWapper from "@/components/formWrapper";
+import { getSelectDataObject, updateSelectProps } from "@/utils/helpers";
+import ConditionForm from "@/components/sideDrawerForm/conditionForm";
 
-// const initEdges = [
-//   {
-//     // type: 'straight',
-//     id: 'e1-2',
-//     source: '1',
-//     target: '2',
-//     label: 'edge label',
-//     type: 'custom',
-//   },
-//   {
-//     id: 'e1-3',
-//     source: '1',
-//     target: '3',
-//     label: 'default',
-//   },
-// ];
 const nodeTypes = {
   Page: CustomNode,
   Condition: CustomNode,
@@ -44,33 +37,71 @@ const edgeTypes: EdgeTypes = {
 };
 const Index = () => {
   const {
-    initEdge,
-    nodes,
-    setNodes,
-    onNodesChange,
-    edges,
-    setEdges,
-    onEdgesChange,
-  } = WotNotContextData();
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { nodes, onNodesChange, edges, setEdges, onEdgesChange } =
+    WotNotContextData();
 
-  // const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  // const [edges, setEdges, onEdgesChange] = useEdgesState(initEdge);
-
-  // useEffect(() => {
-  //   if (!initNodes) return;
-
-  //   setNodes(initNodes);
-  // }, [initNodes]);
-
-  // useEffect(() => {
-  //   if (!initEdge) return;
-  //   setEdges(initEdge);
-  // }, [initEdge]);
+  const [formObject, setFormObject] = useState(pageFormObject);
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+
+  const fetchPageList = async () => {
+    const res = await FetchApi(PAGE_LIST, "GET", {
+      authorization: "Basic b2F1dGhfY2xpZW50X2lkOnNlY3JldC1hcHA=",
+    });
+    return res;
+  };
+
+  const { data, isError, isFetching, isLoading } = useFetch({
+    name: ["fetchPageList"],
+    fn: () => fetchPageList(),
+  });
+
+  const fetchFieldCondition = async () => {
+    const res = await FetchApi(FIELD_CONDITION, "GET", {
+      authorization: "Basic b2F1dGhfY2xpZW50X2lkOnNlY3JldC1hcHA=",
+    });
+    return res;
+  };
+
+  const {
+    data: FieldConditions,
+    isError: isErrorFieldConditions,
+    isFetching: isFetchingFieldConditions,
+    isLoading: isLoadingFieldConditions,
+  } = useFetch({
+    name: ["fetchFieldCondition"],
+    fn: () => fetchFieldCondition(),
+  });
+  console.log(FieldConditions);
+
+  useEffect(() => {
+    if (!data?.payload) return;
+
+    const options = data?.payload?.map((ele: any) => ({
+      label: ele?.name,
+      value: ele?.id,
+      details: ele,
+    }));
+
+    const newForm = updateSelectProps(pageFormObject, "page", options);
+    setFormObject(newForm);
+  }, [data]);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dataObject = getSelectDataObject(e);
+    console.log(dataObject);
+  };
+
+  const submitForm = async (data) => {
+    console.log(data);
+  };
   return (
     <div className="flex flex-col h-screen">
       <div className="flex gap-4 justify-end bg-white p-4 h-fit">
@@ -111,7 +142,20 @@ const Index = () => {
           <Background color="blue" variant={BackgroundVariant.Dots} gap={12} />
         </ReactFlow>
       </div>
-      <SideDrawer />
+      <SideDrawer isLoading={isFetching || isLoading}>
+        {/* <form onSubmit={handleSubmit(submitForm)}>
+          <div className="grid grid-cols-1 w-full gap-4">
+            <FormWapper
+              formObject={formObject}
+              register={register}
+              errors={errors}
+              onChange={onChange}
+            />
+          </div>
+          <Button btnName="Submit" btnType="primary" type="submit" />
+        </form> */}
+        <ConditionForm />
+      </SideDrawer>
     </div>
   );
 };

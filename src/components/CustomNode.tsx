@@ -88,7 +88,11 @@ function CustomNode(props: any) {
       className={`px-2 border-y border-r ${
         selected ? "border-blue-600" : ""
       } py-2 shadow-md rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l ${
-        selectionIcons[data?.type]?.bgColor || "before:bg-red-500"
+        data?.type === "Page"
+          ? "before:!bg-blue-400"
+          : data?.type === "Condition"
+          ? "before:!bg-yellow-400"
+          : "before:bg-red-500"
       }  before:top-0 before:-left-1 before:-z-10`}
     >
       {data?.start && (
