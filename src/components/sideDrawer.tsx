@@ -11,9 +11,6 @@ interface SideDrawerInterface {
   children: React.ReactNode;
 }
 const SideDrawer = ({ isLoading, children }: SideDrawerInterface) => {
-  const { selectedNodeData } = WotNotContextData();
-  // console.log("selectedNodeData", selectedNodeData);
-
   return (
     <div className="drawer drawer-end">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
@@ -25,17 +22,17 @@ const SideDrawer = ({ isLoading, children }: SideDrawerInterface) => {
         ></label>
         {/* <ul className=''> */}
         {/* Sidebar content here */}
-        <div className="menu text-black w-1/2 p-4 max-h-full h-full bg-white">
+        <div className="menu text-black w-1/3 px-6 py-4 max-h-full h-full bg-white">
           <div className="flex flex-col gap-4 max-h-full h-full">
             <div className="flex items-center gap-3 h-fit">
-              <Image
+              {/* <Image
                 src={
                   selectionIcons[selectedNodeData?.data?.type]?.icon ||
                   StartIcon
                 }
                 alt="start here"
                 height={22}
-              />
+              /> */}
               <header className="font-normal text-base">Select Page</header>
             </div>
             <div className="h-full max-h-full overflow-auto">

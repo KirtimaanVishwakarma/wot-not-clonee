@@ -17,6 +17,7 @@ interface DynamicFormInterface {
   useWatch?: any;
   setValue?: any;
   onChange?: (value: any) => void;
+  className?: string;
 }
 
 const DynamicFormWrapper = ({
@@ -27,6 +28,7 @@ const DynamicFormWrapper = ({
   dynamicFieldName,
   formDisabled,
   onChange,
+  className,
 }: DynamicFormInterface) => {
   return (
     <>
@@ -44,6 +46,7 @@ const DynamicFormWrapper = ({
               errorFields={errorById}
               formDisabled={!!formDisabled}
               onChange={onChange}
+              className={className}
             />
           );
         }
@@ -57,6 +60,7 @@ const DynamicFormWrapper = ({
             errorFields={errorById}
             formDisabled={!!formDisabled}
             onChange={onChange}
+            className={className}
           />
         );
       })}

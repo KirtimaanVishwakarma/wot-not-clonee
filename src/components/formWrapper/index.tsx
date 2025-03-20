@@ -44,6 +44,7 @@ const FormWapper = ({
   // dynamicFieldName,
   formDisabled,
   onChange,
+  className,
 }: any) => {
   return (
     <>
@@ -60,6 +61,7 @@ const FormWapper = ({
               errorFields={errorById}
               formDisabled={!!formDisabled}
               onChange={onChange}
+              className={className}
             />
           );
         }
@@ -73,6 +75,7 @@ const FormWapper = ({
             errorFields={errorById}
             formDisabled={!!formDisabled}
             onChange={onChange}
+            className={className}
           />
         );
       })}

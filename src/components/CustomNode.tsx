@@ -87,7 +87,7 @@ function CustomNode(props: any) {
       onMouseEnter={() => setCopyNode(id)}
       className={`px-2 border-y border-r ${
         selected ? "border-blue-600" : ""
-      } py-2 shadow-md rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l ${
+      } py-2 shadow-md cursor-pointer rounded bg-white relative before:content-[""] before:absolute before:h-full before:w-2 before:rounded-l ${
         data?.type === "Page"
           ? "before:!bg-blue-400"
           : data?.type === "Condition"

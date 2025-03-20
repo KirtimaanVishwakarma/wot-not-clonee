@@ -43,7 +43,8 @@ const Button = ({
     >
       {icon ? (
         <div className="flex justify-between gap-2">
-          <Image src={icon} alt="icon" height={20} /> <span> {btnName}</span>
+          <Image src={icon} alt="icon" height={20} />{" "}
+          <span className="flex items-center"> {btnName}</span>
         </div>
       ) : (
         btnName

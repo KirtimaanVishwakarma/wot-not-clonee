@@ -32,12 +32,12 @@ const Select = ({
         </label>
       )}
       <select
-        className={`mx-0 h-12 truncate rounded border border-solid p-2 pr-6 ${
+        className={`mx-0 h-12 w-full truncate rounded border border-solid p-2 pr-6 ${
           error?.message || errorsMsg ? "border-red-100" : "border-gray-400"
-        } bg-white-0 text-base font-normal text-black outline-none ${
+        } bg-white text-base font-normal text-black outline-none ${
           label && "w-full"
-        }
-      ${formDisabled || disabled ? "bg-white-200" : "bg-white-0"}
+        } ${className || ""}
+      ${formDisabled || disabled ? "bg-white-200" : "bg-white"}
       `}
         disabled={formDisabled || disabled}
         id={id}

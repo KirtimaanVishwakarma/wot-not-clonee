@@ -21,19 +21,19 @@ const Input = ({
   onChange,
 }: FormFieldInterface) => {
   return (
-    <div className={`relative mb-2 self-start ${span || "col-span-1"}`}>
+    <div className={`relative mb-2 self-start w-full ${span || "col-span-1"}`}>
       <label
         htmlFor={id}
-        className=" mb-2 block whitespace-nowrap text-base font-medium text-black"
+        className=" mb-2 block whitespace-nowrap text-sm font-medium text-black"
       >
         {label} {form?.required && <span className="text-rose-800">*</span>}
       </label>
       <input
-        className={`mx-0 bg-white h-12 truncate rounded border border-solid p-2 px-3 ${
+        className={`mx-0 bg-white w-full h-12 truncate rounded border border-solid p-2 px-3 ${
           errorFields ? "border-red-700" : "border-gray-400"
         } bg-white-0 text-base font-normal text-black outline-none ${
           label && "w-full"
-        }
+        } ${className || ""}
     ${formDisabled || disabled ? "bg-white-200" : "bg-white-0"}
    placeholder:text-black `}
         type={type}

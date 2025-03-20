@@ -25,6 +25,7 @@ import { useForm } from "react-hook-form";
 import FormWapper from "@/components/formWrapper";
 import { getSelectDataObject, updateSelectProps } from "@/utils/helpers";
 import ConditionForm from "@/components/sideDrawerForm/conditionForm";
+import Pageform from "@/components/sideDrawerForm/pageform";
 
 const nodeTypes = {
   Page: CustomNode,
@@ -41,8 +42,16 @@ const Index = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { nodes, onNodesChange, edges, setEdges, onEdgesChange } =
-    WotNotContextData();
+  const {
+    nodes,
+    onNodesChange,
+    edges,
+    setEdges,
+    onEdgesChange,
+    selectedNodeData,
+  } = WotNotContextData();
+
+  console.log("selectedNodeData", selectedNodeData?.data?.type);
 
   const [formObject, setFormObject] = useState(pageFormObject);
 
@@ -79,7 +88,6 @@ const Index = () => {
     name: ["fetchFieldCondition"],
     fn: () => fetchFieldCondition(),
   });
-  console.log(FieldConditions);
 
   useEffect(() => {
     if (!data?.payload) return;
@@ -93,10 +101,10 @@ const Index = () => {
     const newForm = updateSelectProps(pageFormObject, "page", options);
     setFormObject(newForm);
   }, [data]);
-
+  const [pageObjectData, setPageObjectData] = useState(null);
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dataObject = getSelectDataObject(e);
-    console.log(dataObject);
+    setPageObjectData(dataObject);
   };
 
   const submitForm = async (data) => {
@@ -143,18 +151,19 @@ const Index = () => {
         </ReactFlow>
       </div>
       <SideDrawer isLoading={isFetching || isLoading}>
-        {/* <form onSubmit={handleSubmit(submitForm)}>
-          <div className="grid grid-cols-1 w-full gap-4">
-            <FormWapper
-              formObject={formObject}
-              register={register}
-              errors={errors}
-              onChange={onChange}
-            />
-          </div>
-          <Button btnName="Submit" btnType="primary" type="submit" />
-        </form> */}
-        <ConditionForm />
+        {selectedNodeData?.data?.type === "Page" ? (
+          <Pageform
+            handleSubmit={handleSubmit}
+            submitForm={submitForm}
+            formObject={formObject}
+            register={register}
+            errors={errors}
+            onChange={onChange}
+            pageObjectData={pageObjectData}
+          />
+        ) : (
+          <ConditionForm />
+        )}
       </SideDrawer>
     </div>
   );

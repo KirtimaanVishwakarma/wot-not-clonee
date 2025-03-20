@@ -24,7 +24,7 @@ const Input = ({
   const error = errors?.[fieldName]?.[index]?.[fieldId];
 
   return (
-    <div className={`relative mb-2 self-start ${span || "col-span-1"}`}>
+    <div className={`relative mb-2 self-start w-full ${span || "col-span-1"}`}>
       {label && (
         <label
           htmlFor={id}
@@ -34,12 +34,12 @@ const Input = ({
         </label>
       )}
       <input
-        className={`mx-0 h-12 truncate rounded border border-solid p-2 px-3 ${
+        className={`mx-0 h-12 truncate w-full rounded border border-solid p-2 px-3 ${
           error ? "border-red-100" : "border-gray-400"
-        } bg-white-0 text-base font-normal text-black outline-none ${
+        } bg-white text-base font-normal text-black outline-none ${
           label && "w-full"
-        }
-    ${formDisabled || disabled ? "bg-white-200" : "bg-white-0"}
+        } ${className || ""}
+    ${formDisabled || disabled ? "bg-white-200" : "bg-white"}
     `}
         type={type}
         disabled={formDisabled || disabled}

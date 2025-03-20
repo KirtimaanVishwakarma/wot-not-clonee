@@ -19,7 +19,9 @@ const Select = ({
 }: FormFieldInterface) => {
   return (
     <div
-      className={`relative mb-2 bg-white self-start ${span || "col-span-1"}`}
+      className={`relative mb-2 w-full bg-white self-start ${
+        span || "col-span-1"
+      }`}
     >
       <label
         htmlFor={id}
@@ -28,11 +30,11 @@ const Select = ({
         {label} {form?.required && <span className="text-rose-800">*</span>}
       </label>
       <select
-        className={`mx-0 bg-white h-12 truncate rounded border border-solid p-2 pr-6 ${
+        className={`mx-0 w-full bg-white h-12 truncate rounded border border-solid p-2 pr-6 ${
           errorFields ? "border-red-700" : "border-gray-400"
         } bg-white-0 text-base font-normal text-black outline-none ${
           label && "w-full"
-        }
+        }  ${className || ""}
       ${formDisabled || disabled ? "bg-white-200" : "bg-white-0"}
       `}
         disabled={formDisabled || disabled}
