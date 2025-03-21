@@ -51,7 +51,7 @@ const Index = () => {
     selectedNodeData,
   } = WotNotContextData();
 
-  console.log("selectedNodeData", selectedNodeData?.data?.type);
+  // console.log("selectedNodeData", selectedNodeData?.data?.type);
 
   const [formObject, setFormObject] = useState(pageFormObject);
 
@@ -91,7 +91,6 @@ const Index = () => {
 
   useEffect(() => {
     if (!data?.payload) return;
-
     const options = data?.payload?.map((ele: any) => ({
       label: ele?.name,
       value: ele?.id,
@@ -101,6 +100,7 @@ const Index = () => {
     const newForm = updateSelectProps(pageFormObject, "page", options);
     setFormObject(newForm);
   }, [data]);
+
   const [pageObjectData, setPageObjectData] = useState(null);
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dataObject = getSelectDataObject(e);
@@ -110,6 +110,7 @@ const Index = () => {
   const submitForm = async (data) => {
     console.log(data);
   };
+  
   return (
     <div className="flex flex-col h-screen">
       <div className="flex gap-4 justify-end bg-white p-4 h-fit">
@@ -153,6 +154,7 @@ const Index = () => {
       <SideDrawer isLoading={isFetching || isLoading}>
         {selectedNodeData?.data?.type === "Page" ? (
           <Pageform
+            selectedNodeData={selectedNodeData}
             handleSubmit={handleSubmit}
             submitForm={submitForm}
             formObject={formObject}
@@ -162,7 +164,7 @@ const Index = () => {
             pageObjectData={pageObjectData}
           />
         ) : (
-          <ConditionForm />
+          <ConditionForm selectedNodeData={selectedNodeData}/>
         )}
       </SideDrawer>
     </div>

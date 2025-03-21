@@ -8,8 +8,6 @@ import { EdgeTypes, useEdgesState, useNodesState } from "@xyflow/react";
 
 const WotNotData = createContext<{
   nodes: InitialNodeInterface;
-  currentNode: Number;
-  setCurrentNode: React.Dispatch<React.SetStateAction<Number>>;
   selectedNodeData: any;
   setSelectedNodeData: React.Dispatch<React.SetStateAction<any>>;
 }>({
@@ -23,8 +21,6 @@ const WotNotData = createContext<{
       position: { x: 0, y: 50 },
     },
   ],
-  currentNode: 0,
-  setCurrentNode: () => {},
   selectedNodeData: null,
   setSelectedNodeData: () => {},
 });
@@ -32,7 +28,6 @@ export const WotNotDataProvider = ({
   children,
 }: WotNotDataProviderInterface) => {
   const [selectedNodeData, setSelectedNodeData] = useState<any>(null);
-  const [currentNode, setCurrentNode] = useState<Number>(1);
   const [currentPageNode, setCurrentPageNode] = useState<Number>(1);
   const [currentConditionNode, setCurrentConditionNode] = useState<Number>(1);
   const [nodes, setNodes, onNodesChange] = useNodesState([
@@ -52,8 +47,6 @@ export const WotNotDataProvider = ({
   return (
     <WotNotData.Provider
       value={{
-        currentNode,
-        setCurrentNode,
         selectedNodeData,
         setSelectedNodeData,
         currentPageNode,

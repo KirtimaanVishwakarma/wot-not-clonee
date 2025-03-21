@@ -2,10 +2,6 @@ import React, { memo, useEffect } from "react";
 import { Handle, Position, ViewportPortal } from "@xyflow/react";
 import Image from "next/image";
 import { getEdge, selectionIcons, selectionType } from "@/utils/constants";
-import RefFlagIcon from "../../public/wotnot/flag.svg";
-import DeleteIcon from "../../public/wotnot/delete-icon.svg";
-import CopyIcon from "../../public/wotnot/copy.svg";
-import SideDrawerProvider from "@/context/wotnotSideDrawer";
 import WotNotContextData from "@/context/wotnotData";
 
 function ConditionNode(props: any) {

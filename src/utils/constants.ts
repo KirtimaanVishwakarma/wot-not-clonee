@@ -24,6 +24,7 @@ export const getEdge = (
   id = "",
   source = "",
   target = "",
+   position={},
   label = "",
   type = "custom",
   deletable = false
@@ -33,6 +34,7 @@ export const getEdge = (
     source,
     target,
     label,
+    position,
     type,
     deletable,
   };

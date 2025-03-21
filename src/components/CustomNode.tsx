@@ -47,30 +47,30 @@ function CustomNode(props: any) {
   const getPosition = (ind: number, prop: any) => {
     let position;
     switch (ind) {
+      // case 1:
+      //   position = {
+      //     x: prop?.positionAbsoluteX - 300,
+      //     y: prop?.positionAbsoluteY + 300,
+      //   };
+      //   break;
       case 1:
-        position = {
-          x: prop?.positionAbsoluteX - 300,
-          y: prop?.positionAbsoluteY + 300,
-        };
-        break;
-      case 2:
         position = {
           x: prop?.positionAbsoluteX - 100,
           y: prop?.positionAbsoluteY + 300,
         };
         break;
-      case 3:
+      case 2:
         position = {
           x: prop?.positionAbsoluteX + 100,
           y: prop?.positionAbsoluteY + 300,
         };
         break;
-      case 4:
-        position = {
-          x: prop?.positionAbsoluteX + 300,
-          y: prop?.positionAbsoluteY + 300,
-        };
-        break;
+      // case 4:
+      //   position = {
+      //     x: prop?.positionAbsoluteX + 300,
+      //     y: prop?.positionAbsoluteY + 300,
+      //   };
+      //   break;
 
       default:
         position = {
@@ -175,17 +175,18 @@ function CustomNode(props: any) {
                   ...currNode,
                   data,
                 };
-                const prevInitEdge = JSON.parse(JSON.stringify(nodes));
-                prevInitEdge[nodeIndex] = connectedNode;
+                const prevInitNodes = JSON.parse(JSON.stringify(nodes));
+                prevInitNodes[nodeIndex] = connectedNode;
 
                 if (type?.type === "Condition") {
-                  const arr = [1, 2, 3, 4];
+                  const arr = [1, 2];
 
                   const conditionEdge = arr?.map((ed) =>
                     getEdge(
                       `cd${currentConditionNode + ed}`,
                       `cd${currentConditionNode}`,
-                      `cd${currentConditionNode + ed}`
+                      `cd${currentConditionNode + ed}`,
+                      getPosition(ed, props),
                       // 'label'
                     )
                   );
@@ -195,7 +196,11 @@ function CustomNode(props: any) {
                     getEdge(
                       `cd${currentConditionNode}`,
                       `${props?.id}`,
-                      `cd${currentConditionNode}`
+                      `cd${currentConditionNode}`,
+                      {
+                        x: props?.positionAbsoluteX,
+                        y: props?.positionAbsoluteY + 150,
+                      },
                       // 'label'
                     ),
                     ...conditionEdge,
@@ -211,7 +216,7 @@ function CustomNode(props: any) {
                     };
                   });
                   setNodes([
-                    ...prevInitEdge,
+                    ...prevInitNodes,
                     {
                       id: `cd${currentConditionNode}`,
                       type: type?.type,
@@ -224,7 +229,7 @@ function CustomNode(props: any) {
                     },
                     ...conditionNode,
                   ]);
-                  setCurrentConditionNode((prev) => prev + 5);
+                  setCurrentConditionNode((prev) => prev + 3);
                 } else {
                   const edge = getEdge(
                     `p${currentPageNode}`,
@@ -236,7 +241,7 @@ function CustomNode(props: any) {
                   setEdges((prev) => [...prev, edge]);
 
                   setNodes([
-                    ...prevInitEdge,
+                    ...prevInitNodes,
                     {
                       id: `p${currentPageNode}`,
                       type: type?.type,

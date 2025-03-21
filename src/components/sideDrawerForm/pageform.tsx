@@ -10,7 +10,10 @@ const Pageform = ({
   errors,
   onChange,
   pageObjectData,
+  selectedNodeData
 }: any) => {
+  console.log(selectedNodeData);
+  
   return (
     <>
       <form onSubmit={handleSubmit(submitForm)}>
