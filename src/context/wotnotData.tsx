@@ -4,7 +4,8 @@ import {
 } from "@/utils/interface";
 import React, { createContext, useContext, useState } from "react";
 import StartHere from "../../public/start-here.svg";
-import { EdgeTypes, useEdgesState, useNodesState } from "@xyflow/react";
+import { useEdgesState, useNodesState } from "@xyflow/react";
+import { useForm, useWatch } from "react-hook-form";
 
 const WotNotData = createContext<{
   nodes: InitialNodeInterface;
@@ -44,6 +45,21 @@ export const WotNotDataProvider = ({
   ]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+    setValue,
+    getValues,
+    watch
+  } = useForm({
+    defaultValues: {},
+  });
+// console.log("getValues",getValues());
+// console.log("nodes",nodes);
+// console.log("edges",edges);
+
   return (
     <WotNotData.Provider
       value={{
@@ -59,6 +75,14 @@ export const WotNotDataProvider = ({
         edges,
         setEdges,
         onEdgesChange,
+        register,
+        handleSubmit,
+        errors,
+        control,
+        setValue,
+        useWatch,
+        getValues,
+        watch
       }}
     >
       {children}

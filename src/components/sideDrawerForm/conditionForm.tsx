@@ -5,7 +5,7 @@ import DeleteIcon from "../../../public/wotnot/delete-icon.svg";
 import Pluse from "../../../public/wotnot/plus-icon.svg";
 import Button from "../button";
 import { conditionForm, getEdge } from "@/utils/constants";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useFieldArray } from "react-hook-form";
 import DynamicFormWrapper from "../dynamicFormWrapper";
 import WotNotContextData from "@/context/wotnotData";
 
@@ -16,10 +16,15 @@ const Conditions = ({
   selectedNodeData,
   errors,
   register,
+  setValue,
+  useWatch,
+  watch,
 }: any) => {
   const btns = ["ANY", "ALL"];
-  const [matchType, setMatchType] = useState("ANY");
-  const [rules, setRules] = useState({});
+  const [matchType, setMatchType] = useState(
+    watch()[`matchType_${selectedBranchCondition}-${selectedNodeData?.id}`] ||
+      "ANY"
+  );
 
   const {
     fields: liveStockFields,
@@ -28,28 +33,21 @@ const Conditions = ({
     replace,
   } = useFieldArray({
     control,
-    name: `${selectedBranchCondition}-${selectedNodeData?.id}`,
+    name: `condition_${selectedBranchCondition}-${selectedNodeData?.id}`,
   });
 
   const conditionData = useWatch({
     control,
-    name: `${selectedBranchCondition}-${selectedNodeData?.id}`,
+    name: `condition_${selectedBranchCondition}-${selectedNodeData?.id}`,
   });
-  console.log("conditionData", conditionData);
 
   useEffect(() => {
-    if (!conditionData) return;
-    // setRules, selectedBtn
-    const conditions = conditionData?.map((condition) => ({
-      condition: `${condition?.variable} ${condition?.operator} ${condition?.value}`,
-    }));
-    const rules = {
-      conditions,
-      matchType,
-    };
-
-    console.log("rules", rules);
-  }, [conditionData]);
+    // if (!conditionData) return;
+    setValue(
+      `matchType_${selectedBranchCondition}-${selectedNodeData?.id}`,
+      matchType
+    );
+  }, [matchType]);
 
   useEffect(() => {
     if (selectedNodeData?.id) {
@@ -110,7 +108,7 @@ const Conditions = ({
 
               <div className="grid grid-cols-1 gap-1 w-full">
                 <DynamicFormWrapper
-                  dynamicFieldName={`${selectedBranchCondition}-${selectedNodeData?.id}`}
+                  dynamicFieldName={`condition_${selectedBranchCondition}-${selectedNodeData?.id}`}
                   errors={errors}
                   formObject={conditionForm}
                   index={index}
@@ -147,24 +145,23 @@ const ConditionForm = ({ selectedNodeData }: any) => {
     setNodes,
     currentConditionNode,
     setCurrentConditionNode,
-  } = WotNotContextData();
-
-  const {
     register,
     handleSubmit,
-    formState: { errors },
+    errors,
     control,
-  } = useForm({
-    defaultValues: {},
-  });
+    getValues,
+    setValue,
+    watch,
+    useWatch,
+  }: any = WotNotContextData();
 
-  const handleAddNode = (activeNodes) => {
+  const handleAddNode = (activeNodes: any) => {
     const filteredEdge = edges?.filter(
-      (fil) => fil?.source === selectedNodeData?.id
+      (fil: any) => fil?.source === selectedNodeData?.id
     );
     const lastEdge = filteredEdge?.[filteredEdge?.length - 1];
-    const lastNode = activeNodes?.find((ele) => ele?.id === lastEdge?.id);
-    setEdges((prev) => [
+    const lastNode = activeNodes?.find((ele: any) => ele?.id === lastEdge?.id);
+    setEdges((prev: any) => [
       ...prev,
       getEdge(
         `cd${currentConditionNode}`,
@@ -190,53 +187,89 @@ const ConditionForm = ({ selectedNodeData }: any) => {
         },
       },
     ]);
-    setCurrentConditionNode((prev) => prev + 1);
+    setCurrentConditionNode((prev: any) => prev + 1);
   };
 
-  const removeConditionHandler = (ele) => {
-    const filteredEdge = edges?.filter((edge) => edge?.id !== ele?.id);
-    const filteredNode = nodes?.filter((node) => node?.id !== ele?.id);
+  const removeConditionHandler = (ele: any) => {
+    const filteredEdge = edges?.filter((edge: any) => edge?.id !== ele?.id);
+    const filteredNode = nodes?.filter((node: any) => node?.id !== ele?.id);
     setEdges(filteredEdge);
     setNodes(filteredNode);
+  };
+
+  const conditionDetail = (ele: any) => {
+    const watchData = watch();
+
+    const conditionData = watchData?.[`condition_${ele?.id}-${ele?.source}`];
+    const matchType = watchData?.[`matchType_${ele?.id}-${ele?.source}`];
+    if (conditionData && matchType) {
+      return {
+        conditionData,
+        matchType,
+      };
+    }
+    return null;
   };
   return (
     <>
       {!selectedBranchCondition ? (
         <div className="flex flex-col gap-3">
           {edges
-            ?.filter((fil) => fil?.source === selectedNodeData?.id)
-            ?.map((ele, ind, arr) => (
-              <div key={ele?.id}>
-                <header className="font-medium text-sm mb-2">
-                  Branch {ind + 1}
-                  
-                </header>
-                <div className="flex justify-between gap-3 items-center">
-                  <div
-                    className="flex w-full flex-col gap-1"
-                    onClick={() => setSelectedBranchCondition(ele?.id)}
-                  >
-                    <div className="flex justify-between items-center bg-gray-200 p-3 rounded text-gray-800 cursor-pointer">
-                      <header className="font-medium text-xs">
-                        Condition {ind + 1}
-                      </header>
-                      <Image src={ArrowRight} alt="arrow" height={12} />
+            ?.filter((fil: any) => fil?.source === selectedNodeData?.id)
+            ?.map((ele: any, ind: number, arr: any) => {
+              const conditions = conditionDetail(ele);
+              return (
+                <div key={ele?.id}>
+                  <header className="font-medium text-sm mb-2">
+                    Branch {ind + 1}
+                  </header>
+                  <div className="flex justify-between gap-3 items-center">
+                    <div
+                      className="flex w-full flex-col gap-1"
+                      onClick={() => setSelectedBranchCondition(ele?.id)}
+                    >
+                      <div className="flex justify-between items-center bg-gray-200 p-3 rounded text-gray-800 cursor-pointer">
+                        <div className="font-medium text-xs">
+                          {conditions ? (
+                            <div className="flex items-center gap-2">
+                              <header className="font-semibold text-base text-green-500">
+                                {conditions?.matchType}
+                              </header>
+                              <div className=" flex-wrap flex gap-x-2 text-blue-500">
+                                {conditions?.conditionData?.map(
+                                  (condition: any, ind: number) => (
+                                    <span
+                                      className="bg-gray-400 p-1 text-sm text-white rounded"
+                                      key={ind}
+                                    >
+                                      {`${condition?.variable} ${condition?.operator} ${condition?.value}`}
+                                    </span>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <header>Condition {ind + 1}</header>
+                          )}
+                        </div>
+                        <Image src={ArrowRight} alt="arrow" height={12} />
+                      </div>
                     </div>
+                    {arr?.length !== 1 ? (
+                      <Image
+                        src={DeleteIcon}
+                        alt="delete"
+                        height={18}
+                        className="cursor-pointer"
+                        onClick={() => removeConditionHandler(ele)}
+                      />
+                    ) : (
+                      <div className="w-5" />
+                    )}
                   </div>
-                  {arr?.length !== 1 ? (
-                    <Image
-                      src={DeleteIcon}
-                      alt="delete"
-                      height={18}
-                      className="cursor-pointer"
-                      onClick={() => removeConditionHandler(ele)}
-                    />
-                  ) : (
-                    <div className="w-5" />
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           <Button
             btnName="Add Condition"
             btnType="custom"
@@ -253,6 +286,9 @@ const ConditionForm = ({ selectedNodeData }: any) => {
           selectedNodeData={selectedNodeData}
           errors={errors}
           register={register}
+          setValue={setValue}
+          useWatch={useWatch}
+          watch={watch}
         />
       )}
     </>

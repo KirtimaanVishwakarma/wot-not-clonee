@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import {
   ReactFlow,
   MiniMap,
@@ -9,23 +9,19 @@ import {
   Panel,
   EdgeTypes,
 } from "@xyflow/react";
-import StartHere from "../../public/start-here.svg";
 import CustomNode from "@/components/CustomNode";
 import Button from "@/components/button";
 import CustomEdge from "@/components/customEdge";
 import WotNotContextData from "@/context/wotnotData";
 import conditionNode from "@/components/conditionNode";
-import SideDrawer from "@/components/sideDrawer";
+import SideTab from "@/components/sideTab";
 import { useFetch } from "@/hooks/useFetch";
 import FetchApi from "@/utils/apiUtils";
 import { FIELD_CONDITION, PAGE_LIST } from "@/utils/ApiConstants";
-import { pageFormObject } from "@/utils/constants";
-import { register } from "module";
-import { useForm } from "react-hook-form";
-import FormWapper from "@/components/formWrapper";
-import { getSelectDataObject, updateSelectProps } from "@/utils/helpers";
 import ConditionForm from "@/components/sideDrawerForm/conditionForm";
 import Pageform from "@/components/sideDrawerForm/pageform";
+import SideDrawerProvider from "@/context/wotnotSideDrawer";
+import { useForm, useWatch } from "react-hook-form";
 
 const nodeTypes = {
   Page: CustomNode,
@@ -38,25 +34,31 @@ const edgeTypes: EdgeTypes = {
 };
 const Index = () => {
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const {
     nodes,
     onNodesChange,
     edges,
     setEdges,
     onEdgesChange,
     selectedNodeData,
-  } = WotNotContextData();
+    register,
+    handleSubmit,
+    errors,
+    control,
+    useWatch,
+    setValue,
+  }: any = WotNotContextData();
 
-  // console.log("selectedNodeData", selectedNodeData?.data?.type);
+  const { isOpen } = SideDrawerProvider();
 
-  const [formObject, setFormObject] = useState(pageFormObject);
+  // const {
+  //   register,
+  //   formState: { errors },
+  //   setValue,
+  //   control,
+  // } = useForm();
 
   const onConnect = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
+    (params: any) => setEdges((eds: any) => addEdge(params, eds)),
     [setEdges]
   );
 
@@ -89,41 +91,26 @@ const Index = () => {
     fn: () => fetchFieldCondition(),
   });
 
-  useEffect(() => {
-    if (!data?.payload) return;
-    const options = data?.payload?.map((ele: any) => ({
-      label: ele?.name,
-      value: ele?.id,
-      details: ele,
-    }));
+  const submitForm = async (formData) => {
+    console.log(formData);
 
-    const newForm = updateSelectProps(pageFormObject, "page", options);
-    setFormObject(newForm);
-  }, [data]);
-
-  const [pageObjectData, setPageObjectData] = useState(null);
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dataObject = getSelectDataObject(e);
-    setPageObjectData(dataObject);
+    // console.log("nodes", nodes);
+    console.log("edges", edges);
   };
 
-  const submitForm = async (data) => {
-    console.log(data);
-  };
-  
   return (
-    <div className="flex flex-col h-screen">
+    // <div className="flex flex-col h-screen">
+    <form
+      onSubmit={handleSubmit(submitForm)}
+      className="flex flex-col h-screen"
+    >
       <div className="flex gap-4 justify-end bg-white p-4 h-fit">
         <Button
           btnName="Save"
           btnType="primary"
-          onClick={() => console.log("test")}
+          // onClick={() => console.log("test")}
         />
-        <Button
-          btnName="Publish"
-          btnType="secondary"
-          onClick={() => console.log("test")}
-        />
+        <Button btnName="Publish" btnType="secondary" type="submit" />
       </div>
 
       <div className="h-full w-screen bg-[#E5E4E2]">
@@ -151,23 +138,30 @@ const Index = () => {
           <Background color="blue" variant={BackgroundVariant.Dots} gap={12} />
         </ReactFlow>
       </div>
-      <SideDrawer isLoading={isFetching || isLoading}>
+      <SideTab
+        isLoading={
+          !isOpen ||
+          isFetching ||
+          isLoading ||
+          isFetchingFieldConditions ||
+          isLoadingFieldConditions
+        }
+      >
         {selectedNodeData?.data?.type === "Page" ? (
           <Pageform
             selectedNodeData={selectedNodeData}
-            handleSubmit={handleSubmit}
-            submitForm={submitForm}
-            formObject={formObject}
+            data={data}
             register={register}
             errors={errors}
-            onChange={onChange}
-            pageObjectData={pageObjectData}
+            setValue={setValue}
+            useWatch={useWatch}
+            control={control}
           />
         ) : (
-          <ConditionForm selectedNodeData={selectedNodeData}/>
+          <ConditionForm selectedNodeData={selectedNodeData} />
         )}
-      </SideDrawer>
-    </div>
+      </SideTab>
+    </form>
   );
 };
 

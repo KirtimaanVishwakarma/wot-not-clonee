@@ -24,14 +24,19 @@ function CustomNode(props: any) {
     setCurrentPageNode,
     currentConditionNode,
     setCurrentConditionNode,
-  } = WotNotContextData();
+    control,
+    useWatch,
+    watch,
+  }: any = WotNotContextData();
   const { data, selected, id } = props;
+
+  const pageData = useWatch({ control, name: `page-${id}` });
 
   const [addNewNode, setAddNewNode] = React.useState<string>("");
   const [copyNode, setCopyNode] = React.useState<string>("");
   const nodeId = useNodeId();
   const { setNodes } = useReactFlow();
-  const { drawerHandler } = SideDrawerProvider();
+  const { setIsOpen }: any = SideDrawerProvider();
 
   const handleDeleteNode = () => {
     setNodes((prevNodes) => prevNodes.filter((node) => node.id !== nodeId));
@@ -82,6 +87,44 @@ function CustomNode(props: any) {
     return position;
   };
 
+  const getConditionTitles = () => {
+    const filteredEdge = edges?.filter((edg) => edg?.source === id);
+    const watchClone = watch();
+    const conditionData = filteredEdge?.map((edg) => {
+      if (
+        watchClone[`condition_${edg?.id}-${edg?.source}`] &&
+        watchClone[`matchType_${edg?.id}-${edg?.source}`]
+      ) {
+        return {
+          condition: watchClone[`condition_${edg?.id}-${edg?.source}`],
+          matchType: watchClone[`matchType_${edg?.id}-${edg?.source}`],
+        };
+      }
+      return null;
+    });
+
+    return conditionData;
+  };
+
+  const NodeData = (watchedData: any, type: string) => {
+    let returnData = null;
+    switch (type) {
+      case "Page":
+        returnData = watchedData?.heading?.title || watchedData?.name;
+        break;
+      case "Condition":
+        returnData = getConditionTitles()?.some((ele) => !!ele)
+          ? getConditionTitles()
+          : null;
+        break;
+      default:
+        returnData = null;
+        break;
+    }
+
+    return returnData;
+  };
+
   return (
     <div
       onMouseEnter={() => setCopyNode(id)}
@@ -105,22 +148,59 @@ function CustomNode(props: any) {
           <Image src={data?.start} alt="start here" />
         </div>
       )}
-      <label
-        htmlFor="my-drawer-4"
-        className="drawer-button"
-        onClick={() => setSelectedNodeData(props)}
+      <div
+        className="flex min-h-10 gap-3 w-36 justify-start items-center"
+        onClick={() => {
+          setSelectedNodeData(props);
+          setIsOpen(true);
+        }}
       >
-        <div className="flex min-h-10 gap-3 justify-start items-center">
-          <Image
-            src={data?.start ? RefFlagIcon : selectionIcons[data?.type]?.icon}
-            alt="start here"
-            height={22}
-          />
-          <header className="text-black text-xs font-normal whitespace-nowrap truncate">
-            Bot is triggered if…
-          </header>
+        <Image
+          src={data?.start ? RefFlagIcon : selectionIcons[data?.type]?.icon}
+          alt="start here"
+          height={22}
+        />
+        <div className="text-black text-xs font-normal whitespace-nowrap truncate">
+          {data?.type === "Page" ? (
+            <header> {NodeData(pageData, data?.type) || "Select Page"}</header>
+          ) : data?.type === "Condition" ? (
+            NodeData(pageData, data?.type) ? (
+              // (
+              // NodeData(pageData, data?.type) ? (
+              //   <div className="flex flex-col gap-1">
+              //     {NodeData(pageData, data?.type)?.map((ele, ind) => {
+              //       if (ele) {
+              //         return (
+              //           <div key={ind} className="flex gap-1">
+              //             <span className="text-green-500 font-medium">{ele?.matchType}</span>
+              //             <div>
+              //               {ele?.condition?.map((item, index) => (
+              //                 <span key={index}>
+              //                   {item?.variable}
+              //                   {item?.operator}
+              //                   {item?.value}
+              //                 </span>
+              //               ))}
+              //             </div>
+              //           </div>
+              //         );
+              //       }
+              //       return null;
+              //     })}
+              //   </div>
+              // ) : (
+              //   <header>Select Conditions</header>
+              // )
+              // )
+              <header>Select Conditions</header>
+            ) : (
+              <header>Select Conditions</header>
+            )
+          ) : (
+            "Bot is triggered if…"
+          )}
         </div>
-      </label>
+      </div>
       {!data?.start && (
         <Handle
           type="target"
@@ -167,9 +247,11 @@ function CustomNode(props: any) {
               onClick={() => {
                 setAddNewNode("");
 
-                const currNode = nodes?.find((n) => n.id === addNewNode);
+                const currNode = nodes?.find((n: any) => n.id === addNewNode);
 
-                const nodeIndex = nodes?.findIndex((n) => n.id === addNewNode);
+                const nodeIndex = nodes?.findIndex(
+                  (n: any) => n.id === addNewNode
+                );
 
                 const connectedNode = {
                   ...currNode,
@@ -186,12 +268,12 @@ function CustomNode(props: any) {
                       `cd${currentConditionNode + ed}`,
                       `cd${currentConditionNode}`,
                       `cd${currentConditionNode + ed}`,
-                      getPosition(ed, props),
+                      getPosition(ed, props)
                       // 'label'
                     )
                   );
 
-                  setEdges((prev) => [
+                  setEdges((prev: any) => [
                     ...prev,
                     getEdge(
                       `cd${currentConditionNode}`,
@@ -200,7 +282,7 @@ function CustomNode(props: any) {
                       {
                         x: props?.positionAbsoluteX,
                         y: props?.positionAbsoluteY + 150,
-                      },
+                      }
                       // 'label'
                     ),
                     ...conditionEdge,
@@ -229,7 +311,7 @@ function CustomNode(props: any) {
                     },
                     ...conditionNode,
                   ]);
-                  setCurrentConditionNode((prev) => prev + 3);
+                  setCurrentConditionNode((prev: any) => prev + 3);
                 } else {
                   const edge = getEdge(
                     `p${currentPageNode}`,
@@ -238,7 +320,7 @@ function CustomNode(props: any) {
                     // 'label'
                   );
 
-                  setEdges((prev) => [...prev, edge]);
+                  setEdges((prev: any) => [...prev, edge]);
 
                   setNodes([
                     ...prevInitNodes,
@@ -253,7 +335,7 @@ function CustomNode(props: any) {
                       },
                     },
                   ]);
-                  setCurrentPageNode((prev) => prev + 1);
+                  setCurrentPageNode((prev: any) => prev + 1);
                 }
               }}
             >
