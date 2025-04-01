@@ -56,9 +56,6 @@ export const WotNotDataProvider = ({
   } = useForm({
     defaultValues: {},
   });
-// console.log("getValues",getValues());
-// console.log("nodes",nodes);
-// console.log("edges",edges);
 
   return (
     <WotNotData.Provider

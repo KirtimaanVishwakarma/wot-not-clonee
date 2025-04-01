@@ -21,7 +21,6 @@ import { FIELD_CONDITION, PAGE_LIST } from "@/utils/ApiConstants";
 import ConditionForm from "@/components/sideDrawerForm/conditionForm";
 import Pageform from "@/components/sideDrawerForm/pageform";
 import SideDrawerProvider from "@/context/wotnotSideDrawer";
-import { useForm, useWatch } from "react-hook-form";
 
 const nodeTypes = {
   Page: CustomNode,
@@ -49,13 +48,6 @@ const Index = () => {
   }: any = WotNotContextData();
 
   const { isOpen } = SideDrawerProvider();
-
-  // const {
-  //   register,
-  //   formState: { errors },
-  //   setValue,
-  //   control,
-  // } = useForm();
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds: any) => addEdge(params, eds)),
